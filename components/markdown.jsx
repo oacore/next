@@ -1,5 +1,6 @@
 import React from 'react'
-import ReactMarkdown from 'react-markdown/with-html'
+import ReactMarkdown from 'react-markdown'
+import rehypeRaw from 'rehype-raw'
 
 import Link from './link'
 
@@ -23,22 +24,24 @@ const MarkdownImage = ({ src, alt, className = '', ...restProps }) => (
 )
 
 const markdownConfig = {
-  escapeHtml: false,
+  components: {
+    a: MarkdownLink,
+    img: MarkdownImage,
 
-  renderers: {
-    blockquote: ({ children }) => (
-      <blockquote className="blockquote">{children}</blockquote>
+    blockquote: ({ children, ...restProps }) => (
+      <blockquote className="blockquote" {...restProps}>
+        {children}
+      </blockquote>
     ),
 
-    table: ({ children }) => (
-      <table className="table table-hover">{children}</table>
+    table: ({ children, ...restProps }) => (
+      <table className="table table-hover" {...restProps}>
+        {children}
+      </table>
     ),
-
-    image: MarkdownImage,
-
-    link: MarkdownLink,
-    linkReference: MarkdownLink,
   },
+
+  rehypePlygins: [rehypeRaw],
 }
 
 const Markdown = ({ children, tag, ...markdownProps }) => (
